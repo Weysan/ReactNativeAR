@@ -5,11 +5,9 @@
     "privacy": "public",
     "sdkVersion": "34.0.0",
     "platforms": [
-      "ios",
-      "android",
-      "web"
+      "ios"
     ],
-    "version": "1.0.0",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -24,11 +22,13 @@
       "assets/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.raphaelgoncalves.arproject"
-    },
-    "android": {
-      "package": "com.raphaelgoncalves.arproject"
+      "supportsTablet": false,
+      "bundleIdentifier": "com.raphaelgoncalves.arproject",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We use location to...",
+        "NSCameraUsageDescription": "We use camera to enable the AR capabilities.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     }
   }
 }

@@ -2,19 +2,19 @@ import React from 'react';
 import { AR } from 'expo';
 import { GraphicsView } from 'expo-graphics';
 import ExpoTHREE, { THREE, AR as ThreeAR } from 'expo-three';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import TouchableView from './TouchableView'
 
 export default class ARCamera extends React.Component {
   componentWillMount() {
-    THREE.suppressExpoWarnings();
+    THREE.suppressExpoWarnings(true);
   }
 
   render() {
     return (
+      <View style={{ flex: 1, backgroundColor: 'blue' }}>
       <TouchableView
         style={{ flex: 1, backgroundColor: 'orange' }}
-
         shouldCancelWhenOutside={false}
         onTouchesBegan={this.onTouchesBegan}>
         <GraphicsView
@@ -22,9 +22,17 @@ export default class ARCamera extends React.Component {
           arTrackingConfiguration={AR.TrackingConfigurations.World}
           onContextCreate={this.onContextCreate}
           onRender={this.onRender}
-          style={styles.container}
+          style={{ flex: 1 }}
+          isArRunningStateEnabled
+          isArCameraStateEnabled
         />
       </TouchableView>
+      <TouchableOpacity onPress={this.createNewItem}>
+         <Text style={{margin: 30}}>
+             button name
+         </Text>
+      </TouchableOpacity >
+      </View>
     );
   }
 
@@ -62,21 +70,8 @@ export default class ARCamera extends React.Component {
 
     this.points = new ThreeAR.Points();
     // Add the points to our scene...
-    this.scene.add(this.points)
+    this.scene.add(this.points);
 
-    const self = this;
-    //get current localisation user
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const currPhoneLocation = position;
-        //find relative position of the object
-    },
-    error => {
-      console.warn(error);
-    },
-    {
-      enableHighAccuracy: true
-    });
   };
 
   //function to create a box in the current scene
@@ -105,6 +100,7 @@ export default class ARCamera extends React.Component {
     this.renderer.render(this.scene, this.camera);
   };
 
+  // create an item when clicking on the camera
   onTouchesBegan = async ({ locationX: x, locationY: y }) => {
    if (!this.renderer) {
       return;
@@ -141,19 +137,17 @@ export default class ARCamera extends React.Component {
       new_cube.updateMatrix();
     }
   };
+
+  // create a new Item by clicking in a button automatically in the center of the screen
+  createNewItem = () => {
+    if (!this.renderer) {
+       return;
+     }
+
+    var size = new THREE.Vector2();
+    const rendererSize = this.renderer.getSize(size);
+    var x = rendererSize.width / 2;
+    var y = rendererSize.height / 2;
+    this.onTouchesBegan({locationX: x, locationY: y})
+  };
 }
-
-const styles = StyleSheet.create({
-    container: {
-        alignItems: 'stretch',
-        width: "100%",
-        height: "100%"
-    }
-});
-
-// we want to create object at that position
-const objectPosition = {
-  "altitude":43.264244079589844,
-  "latitude":52.54785026794326,
-  "longitude":13.40943089805423
-};
